@@ -4,7 +4,7 @@ import com.ticketplatform.ddd.domain.repository.HiDomainRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class HiInfraRepositoryImpl implements HiDomainRepository {
+public class HiInfrasRepositoryImpl implements HiDomainRepository {
     @Override
     public String sayHi(String who) {
         return "Hello Infrastructure " + who;

@@ -19,3 +19,6 @@ Caution:
     - if data exist -> please remove before run
 
 ## How to test
+
+## Test high currency using 8 cores with 2000 req/s for eadh thread in 2 minutes
+winrk http://localhost:8080/ticket/1/detail/1 -t 8 -c 2000 -d 120 

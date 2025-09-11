@@ -27,6 +27,7 @@ public class TicketDetailController {
         log.info("Van Binh Nguyen");
         log.info("ticketId: {}, detailId: {}", ticketId, detailId);
 //        return ResultUtil;
+//        return null;
         return ResultUtil.data(ticketDetailAppService.getTicketDetailById(detailId));
     }
 }

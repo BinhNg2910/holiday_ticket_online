@@ -5,16 +5,14 @@ server:
       max: 200 # max 200 threads handle concurrently
 
 spring:
+  # application
   application:
     name: ticketplatform.com
+    #DBS
   datasource:
-    tomcat:
-      max-active: 20 # max connection
-      min-idle: 5 # min number of connection in pool
-      initial-size: 5
-      max-wait: 30000
-      test-on-borrow: true
-      validation-query: SELECT 1
+    hikari:
+      maximum-pool-size: 20  # Số lượng tối đa kết nối
+      minimum-idle: 5        # Số lượng kết nối tối thiểu trong pool
     url: jdbc:mysql://localhost:3316/vetautet
     username: root
     password: root1234
@@ -24,7 +22,7 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: none  # No auto create
+      ddl-auto: update  # Không tự động tạo/ cập nhật bảng thay vì update
     properties:
       hibernate:
         format_sql: true
@@ -44,6 +42,9 @@ spring:
           min-idle: 0 # Minimum number of idle connections in the pool
           max-wait: -1ms # Maximum wait time to get a connection from the pool (uses -1 for no limit)
       connect-timeout: 30000 # Connection timeout (in milliseconds)
+  threads:
+    virtual:
+      enabled: true
 resilience4j:
   circuitbreaker:
     instances:

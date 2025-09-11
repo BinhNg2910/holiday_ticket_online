@@ -11,10 +11,11 @@ import org.springframework.util.StringUtils;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Slf4j
-public class RedisInfrasServiceImpl implements  RedisInfrasService {
+public class RedisInfrasServiceImpl implements RedisInfrasService {
 
     @Resource
     private RedisTemplate<String, Object> redisTemplate;
@@ -37,12 +38,32 @@ public class RedisInfrasServiceImpl implements  RedisInfrasService {
     @Override
     public void setObject(String key, Object value) {
         if (!StringUtils.hasLength(key)) {
+            log.info("Set redis::null, {}", StringUtils.hasLength(key));
             return;
         }
         try {
+            // Convert object to JSON string before storing
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            String jsonValue = objectMapper.writeValueAsString(value);
+//            redisTemplate.opsForValue().set(key, jsonValue);
             redisTemplate.opsForValue().set(key, value);
+            log.info("Set redis successful: key={}", key);
         } catch (Exception e) {
             log.error("setObject error: {}", e.getMessage());
+        }
+    }
+
+    @Override
+    public void setObjectTTL(String key, Object value) {
+        if(!StringUtils.hasLength(key)){
+            log.info("Set redis TTL::null, {}", StringUtils.hasLength(key));
+            return;
+        }
+        try {
+            redisTemplate.opsForValue().set(key, value, 10, TimeUnit.SECONDS);
+            log.info("Set redis TTL successful: key={}, TTL=10 seconds", key);
+        } catch (Exception e) {
+            log.error("setObjectTTL error: {}", e.getMessage());
         }
     }
 

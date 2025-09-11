@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 @Slf4j
-public class TicketDetailInfrastructureImpl implements TicketDetailDomainRepository {
+public class TicketDetailInfrasImpl implements TicketDetailDomainRepository {
 
     // Call JPA mapper
     @Autowired
