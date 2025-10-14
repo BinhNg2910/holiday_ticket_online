@@ -99,4 +99,9 @@ public class RedisInfrasServiceImpl implements RedisInfrasService {
         }
         return null; // or return an optional exception
     }
+
+    @Override
+    public void deleteKey(String key) {
+        redisTemplate.delete(key);
+    }
 }

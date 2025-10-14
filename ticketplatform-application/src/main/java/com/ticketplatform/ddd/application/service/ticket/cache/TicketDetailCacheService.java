@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-public class TicketDetailAppCache {
+public class TicketDetailCacheService {
 
     @Autowired
     private RedisDistributedService redisDistributedService;
@@ -33,6 +33,23 @@ public class TicketDetailAppCache {
             .expireAfterWrite(10, TimeUnit.MINUTES)
             .build();
 
+    public boolean orderTicketByUser(Long ticketId) {
+        try {
+            ticketDetailLocalCache.invalidate(ticketId); // remove local cache
+            redisInfrasService.deleteKey(genEventItemKey(ticketId));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     *
+     * get ticket item by id in cache
+     * @param id
+     * @param version
+     * @return
+     */
     public TicketDetail getTicketDefaultCacheNormal(long id, long version) {
         // 1. get ticket item by redis
         TicketDetail ticketDetail = redisInfrasService.getObject(genEventItemKey(id), TicketDetail.class);
@@ -44,7 +61,8 @@ public class TicketDetailAppCache {
         }
 
         // 3. NO -> Missing cache
-        log.info("Cache MISS for {}, {}", id, version);
+//        log.info("Cache MISS for {}, {}", id, version);
+
         // 4. Get data in DBS
         ticketDetail = ticketDetailDomainService.getTicketDetailById(id);
         log.info("From DBS {}, {}, {}", id, version, ticketDetail);
@@ -52,15 +70,17 @@ public class TicketDetailAppCache {
         // 5. check ticket item
         if (ticketDetail != null) { // PROBLEM: if ticketDetail get from DBS null? -> continue querying -> not good
             // 6. set cache
-//            redisInfrasService.setObject(genEventItemKey(id), ticketDetail);
-            redisInfrasService.setObjectTTL(genEventItemKey(id), ticketDetail);
+            redisInfrasService.setObject(genEventItemKey(id), ticketDetail);
+//            redisInfrasService.setObjectTTL(genEventItemKey(id), ticketDetail);
         }
         return ticketDetail;
     }
 
     public TicketDetail getTicketDefaultCacheVip(long id, long version) {
-        log.info("Implement getTicketDefaultCacheVip -> {}, {}", id, version);
-        TicketDetail ticketDetail = ticketDetailDomainService.getTicketDetailById(id); // redisInfrasService.getObject(getEventItemKey(id), TicketDetail.class);
+        // redisInfrasService.getObject(getEventItemKey(id), TicketDetail.class);
+//      // ticketDetailDomainService.getTicketDetailById(id);
+        TicketDetail ticketDetail = redisInfrasService.getObject(genEventItemKey(id), TicketDetail.class);
+
         // YES
         if (ticketDetail != null) {
             log.info("Ticket detail exist {}", ticketDetail);
