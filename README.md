@@ -1,9 +1,4 @@
-## How to get code:
-
->> https://drive.google.com/file/u/1/d/1jnXtX3cUCS1ZLloWEatTZzFkDt2qBJAz/view?usp=drive_link&pli=1
-
 ## How to run
-
 Open evnvironment -> Run
 ```bash
 docker-compose -f environment/docker-compose-dev.yml up
